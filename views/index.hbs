@@ -1,1 +1,52 @@
-<h1>hello</h1>
+<div class="container">
+    {{#if user_profile}}
+        <form method="POST" action="/query">
+            <p>Name: {{user_profile.name}}</p>
+            <p>Email: {{user_profile.email}}</p>
+            <p>Movie Year Range: {{user_profile.movieYearRange.[0]}} - {{user_profile.movieYearRange.[1]}}</p>
+            <p>Preferred Genres</p>
+            {{#if user_profile.interest.genre.length}}
+                <ul>
+                    {{#each user_profile.interest.genre}}
+                        <li><input type="checkbox" name="genre[{{@index}}]" value="{{this}}"><label for="genre{{@index}}">{{this}}</label></li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                NO PREFERRED GENRES
+            {{/if}}
+            
+            <p>Preferred Movie Countries</p>
+            {{#if user_profile.interest.country.length}}
+                <ul>
+                    {{#each user_profile.interest.country}}
+                        <li><input type="radio" value="{{this}}" name="country">{{this}}</li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                NO PREFERRED COUNTRY
+            {{/if}}
+            <input type="submit" value="Search">
+        </form>
+
+
+        <p>Preferred Actors</p>
+        {{#if user_profile.interest.actor.length}}
+            {{#each user_profile.actorLinks}}
+                <p><b>{{@key}}</b></p>
+                <ol>
+                {{#each this}}
+                    {{#each this}}
+                        <li><a href ="{{this}}" target="_blank">{{@key}}</a></li>
+                    {{/each}}
+                {{/each}}
+                </ol>
+            {{/each}}
+        {{else}}
+            NO PREFERRED ACTORS
+        {{/if}}
+
+
+    {{else}}
+        UNABLE TO READ FOAF PROPERLY
+    {{/if}}
+</div>
