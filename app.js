@@ -13,11 +13,14 @@ user_profile = {
     name: "elvis",
     email: "emailelvis@gmail.com",
     interest:{
-        genre:["Comedy", "Superhero"],
+        genre:["Comedy", "Superhero","Thriller"],
         actor:["Tom Holland", "Tom Cruise"],
-        country:["United States of America", "Korea"]
-    }
+        country:["United States of America", "South Korea"]
+    },
+    movieYearRange:[2020,2022],
 }
+
+if(user_profile.interest.actor.length >0) user_profile.actorLinks = {};
 
 // const store = $rdf.graph()
 // $rdf.parse(
@@ -59,11 +62,28 @@ const clientDBPedia = new ParsingClient({
 	endpointUrl: 'https://dbpedia.org/sparql'
 })
 	
+for(let i = 0; i <user_profile.interest.actor.length; i++){
+    let query = "SELECT ?movie ?name WHERE { ?movie rdf:type dbo:Film . ?movie dbo:starring ?actor. ?actor dbp:name \""+user_profile.interest.actor[i]+"\"@en. ?movie dbp:name ?name }"
+    clientDBPedia.query.select(query).then(result => {
+    
+        // console.log(result)
+        user_profile.actorLinks[user_profile.interest.actor[i]] = []
+        result.forEach(row => {
+            let movie = {[row.name.value]:row.movie.value}
+            user_profile.actorLinks[user_profile.interest.actor[i]].push(movie)
+        })
+        // console.log(user_profile)
+    }).catch(error => {
+        console.log(error)
+    })
+}
+
 // const query = `
-//     SELECT ?f 
+//     SELECT ?movie
 //     WHERE {
-//             ?f rdf:type dbo:Film .
-//             ?f dbo:starring dbr:Tom_Holland .
+//             ?movie rdf:type dbo:Film .
+//             ?movie dbo:starring ?actor.
+//             FILTER(?actor = dbr:Tom_Holland)
 //     }
 // `
 
@@ -139,8 +159,9 @@ app.engine('hbs', expressHandlebars.engine({
 	defaultLayout: "main.hbs"
 }))
 app.set('view engine', 'hbs')
+app.use(express.static("public"))
 app.use(express.urlencoded({
-    extended:false
+    extended:true
 }))
 
 
@@ -154,22 +175,21 @@ app.get('/', function(request, response){
 })
 
 app.post('/query',function(request,response){
-    const query = `
-        SELECT DISTINCT ?item ?itemLabel ?id WHERE {
-            ?item wdt:P1562 ?id .
-            ?countryid rdfs:label "United States of America"@en.
-            ?genre rdfs:label "superhero film"@en.
-            ?item wdt:P495 ?countryid.
-            ?item wdt:P136 ?genre.
-            ?item wdt:P577 ?date.
-            SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }.
-            FILTER(xsd:integer(YEAR(?date)) >=2018 && xsd:integer(YEAR(?date)) <=2022)
+    let query = "SELECT DISTINCT ?item ?itemLabel WHERE {"
+    if (request.body.country) query += "?countryid rdfs:label \""+ request.body.country+ "\"@en. ?item wdt:P495 ?countryid."
+    if(request.body.genre){
+        for (let i = 0; i <request.body.genre.length;i++){
+            let genre = request.body.genre[i].toLowerCase() + " film"
+            query+= "?genre"+i+" rdfs:label \""+genre+"\"@en. ?item wdt:P136 ?genre"+ i +"."
         }
-        LIMIT 10
-    `
-    console.log(request.body)
+    }
+    query += "?item wdt:P577 ?date."
+    query += "SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }."
+    query += "FILTER(xsd:integer(YEAR(?date)) >="+user_profile.movieYearRange[0]+" && xsd:integer(YEAR(?date)) <="+user_profile.movieYearRange[1] +")"
+    query += "} LIMIT 10"
+
+    console.log(query)
     clientWIKI.query.select(query).then(result => {
-        // console.log(result)
         response.render('result.hbs',{result})
         
         
