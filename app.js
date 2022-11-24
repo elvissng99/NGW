@@ -13,9 +13,9 @@ user_profile = {
     name: "elvis",
     email: "emailelvis@gmail.com",
     interest:{
-        genre:["Comedy", "Thriller"],
+        genre:["Comedy", "Superhero"],
         actor:["Tom Holland", "Tom Cruise"],
-        country:["United States of America"]
+        country:["United States of America", "Korea"]
     }
 }
 
@@ -59,86 +59,125 @@ const clientDBPedia = new ParsingClient({
 	endpointUrl: 'https://dbpedia.org/sparql'
 })
 	
-const query = `
-    SELECT ?f 
-    WHERE {
-            ?f rdf:type dbo:Film .
-            ?f dbo:starring dbr:Tom_Holland .
-    }
-`
+// const query = `
+//     SELECT ?f 
+//     WHERE {
+//             ?f rdf:type dbo:Film .
+//             ?f dbo:starring dbr:Tom_Holland .
+//     }
+// `
 
-clientDBPedia.query.select(query).then(rows => {
+// clientDBPedia.query.select(query).then(rows => {
     
-    // Too see what we get back as result:
-    console.log(rows)
+//     // Too see what we get back as result:
+//     console.log(rows)
     
-    // rows.forEach(row => {
-    //     game.erleaseDate = row.releaseDate.value
-    // })
+//     // rows.forEach(row => {
+//     //     game.erleaseDate = row.releaseDate.value
+//     // })
     
-}).catch(error => {
-    console.log(error)
-})
+// }).catch(error => {
+//     console.log(error)
+// })
 
 const clientWIKI = new ParsingClient({
 	endpointUrl: 'https://query.wikidata.org/sparql'
 })
 
 //movies from USA, superhero genre, between 2018 and 2022 inclusive
-const query2 = `
-SELECT DISTINCT ?item ?itemLabel ?id WHERE {
-    ?item wdt:P1562 ?id .
-    ?countryid rdfs:label "United States of America"@en.
-    ?genre rdfs:label "superhero film"@en.
-    ?item wdt:P495 ?countryid.
-    ?item wdt:P136 ?genre.
-    ?item wdt:P577 ?date.
-    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }.
-    FILTER(xsd:integer(YEAR(?date)) >=2018 && xsd:integer(YEAR(?date)) <=2022)
-}
-LIMIT 10
-`
+// const query2 = `
+// SELECT DISTINCT ?item ?itemLabel ?id WHERE {
+//     ?item wdt:P1562 ?id .
+//     ?countryid rdfs:label "United States of America"@en.
+//     ?genre rdfs:label "superhero film"@en.
+//     ?item wdt:P495 ?countryid.
+//     ?item wdt:P136 ?genre.
+//     ?item wdt:P577 ?date.
+//     SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }.
+//     FILTER(xsd:integer(YEAR(?date)) >=2018 && xsd:integer(YEAR(?date)) <=2022)
+// }
+// LIMIT 10
+// `
 
 //get the id of country, for example USA = Q30
-`
-SELECT ?item ?itemLabel WHERE {
-    ?item rdfs:label "United States of America"@en.  
-    ?item wdt:P31 wd:Q6256 .
-    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-}
-LIMIT 10
-`
+// `
+// SELECT ?item ?itemLabel WHERE {
+//     ?item rdfs:label "United States of America"@en.  
+//     ?item wdt:P31 wd:Q6256 .
+//     SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+// }
+// LIMIT 10
+// `
 
 //get id of genre, for example superhero film = Q1535153
-`
-SELECT ?item ?itemLabel WHERE {
-    ?item rdfs:label "superhero film"@en.  
-    ?item wdt:P31 wd:Q201658 .
-    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-}
-LIMIT 10
-`
+// `
+// SELECT ?item ?itemLabel WHERE {
+//     ?item rdfs:label "superhero film"@en.  
+//     ?item wdt:P31 wd:Q201658 .
+//     SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+// }
+// LIMIT 10
+// `
 
-clientWIKI.query.select(query2).then(rows => {
+// clientWIKI.query.select(query2).then(rows => {
     
-    // Too see what we get back as result:
-    console.log(rows)
+//     // Too see what we get back as result:
+//     console.log(rows)
     
-    // rows.forEach(row => {
-    //     game.erleaseDate = row.releaseDate.value
-    // })
+//     // rows.forEach(row => {
+//     //     game.erleaseDate = row.releaseDate.value
+//     // })
     
-}).catch(error => {
-    console.log(error)
-})
+// }).catch(error => {
+//     console.log(error)
+// })
 
 
 console.log("starting")
 const app = express()
-
 app.engine('hbs', expressHandlebars.engine({
 	defaultLayout: "main.hbs"
 }))
+app.set('view engine', 'hbs')
+app.use(express.urlencoded({
+    extended:false
+}))
+
+
+
+
+//display user profile
+app.get('/', function(request, response){
+    response.render('index.hbs',{
+        user_profile
+    })
+})
+
+app.post('/query',function(request,response){
+    const query = `
+        SELECT DISTINCT ?item ?itemLabel ?id WHERE {
+            ?item wdt:P1562 ?id .
+            ?countryid rdfs:label "United States of America"@en.
+            ?genre rdfs:label "superhero film"@en.
+            ?item wdt:P495 ?countryid.
+            ?item wdt:P136 ?genre.
+            ?item wdt:P577 ?date.
+            SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }.
+            FILTER(xsd:integer(YEAR(?date)) >=2018 && xsd:integer(YEAR(?date)) <=2022)
+        }
+        LIMIT 10
+    `
+    console.log(request.body)
+    clientWIKI.query.select(query).then(result => {
+        // console.log(result)
+        response.render('result.hbs',{result})
+        
+        
+    }).catch(error => {
+        console.log(error)
+    })
+
+})
 
 // GET /games/super_mario_bros
 app.get("/games/:id", function(request, response){
