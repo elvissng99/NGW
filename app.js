@@ -176,6 +176,7 @@ app.get('/', function(request, response){
 
 app.post('/query',function(request,response){
     let query = "SELECT DISTINCT ?item ?itemLabel WHERE {"
+    query += "?item wdt:P31 wd:Q11424."
     if (request.body.country) query += "?countryid rdfs:label \""+ request.body.country+ "\"@en. ?item wdt:P495 ?countryid."
     if(request.body.genre){
         for (let i = 0; i <request.body.genre.length;i++){
@@ -188,7 +189,7 @@ app.post('/query',function(request,response){
     query += "FILTER(xsd:integer(YEAR(?date)) >="+user_profile.movieYearRange[0]+" && xsd:integer(YEAR(?date)) <="+user_profile.movieYearRange[1] +")"
     query += "} LIMIT 10"
 
-    console.log(query)
+    // console.log(query)
     clientWIKI.query.select(query).then(result => {
         response.render('result.hbs',{result})
         
