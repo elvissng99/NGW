@@ -14,7 +14,8 @@ user_profile = {
     email: "emailelvis@gmail.com",
     interest:{
         genre:["Comedy", "Thriller"],
-        actor:["Tom Holland", "Tom Cruise"]
+        actor:["Tom Holland", "Tom Cruise"],
+        country:["United States of America"]
     }
 }
 
@@ -82,14 +83,40 @@ clientDBPedia.query.select(query).then(rows => {
 const clientWIKI = new ParsingClient({
 	endpointUrl: 'https://query.wikidata.org/sparql'
 })
-	
+
+//movies from USA, superhero genre, between 2018 and 2022 inclusive
 const query2 = `
-    SELECT ?item ?itemLabel ?id WHERE {
-        ?item wdt:P1562?id .
-        ?item wdt:P495 wd:Q30.
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-    }
-    LIMIT 100
+SELECT DISTINCT ?item ?itemLabel ?id WHERE {
+    ?item wdt:P1562 ?id .
+    ?countryid rdfs:label "United States of America"@en.
+    ?genre rdfs:label "superhero film"@en.
+    ?item wdt:P495 ?countryid.
+    ?item wdt:P136 ?genre.
+    ?item wdt:P577 ?date.
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }.
+    FILTER(xsd:integer(YEAR(?date)) >=2018 && xsd:integer(YEAR(?date)) <=2022)
+}
+LIMIT 10
+`
+
+//get the id of country, for example USA = Q30
+`
+SELECT ?item ?itemLabel WHERE {
+    ?item rdfs:label "United States of America"@en.  
+    ?item wdt:P31 wd:Q6256 .
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+LIMIT 10
+`
+
+//get id of genre, for example superhero film = Q1535153
+`
+SELECT ?item ?itemLabel WHERE {
+    ?item rdfs:label "superhero film"@en.  
+    ?item wdt:P31 wd:Q201658 .
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+LIMIT 10
 `
 
 clientWIKI.query.select(query2).then(rows => {
