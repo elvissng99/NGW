@@ -1,0 +1,11 @@
+<div>
+    {{#if result.length}}
+        {{#each result}}
+            <p><a href="{{item.value}}" target="_blank">{{itemLabel.value}}</a></p>
+        {{/each}} 
+
+
+    {{else}}
+        NO RESULTS
+    {{/if}}
+</div>
