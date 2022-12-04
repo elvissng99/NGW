@@ -29,36 +29,36 @@ var elvis_interest = $rdf.sym('http://userprofile.com/owl/profile#elvis_interest
 var country = $rdf.sym('http://userprofile.com/owl/profile#country')
 var elvis = $rdf.sym('http://userprofile.com/owl/profile#elvis')
 
-var elcountry = store.match(elvis_interest, country)
-var elgenre = store.match(elvis_interest, genre)
-var elactor = store.match(elvis_interest, actor)
-var elname = store.match(elvis, name)
-var elemail = store.match(elvis, email)
-var elmovieyearstart = store.match(elvis, movieyearstart)
-var elmovieyearend = store.match(elvis, movieyearend)
+var user_country = store.match(elvis_interest, country)
+var user_genre = store.match(elvis_interest, genre)
+var user_actor = store.match(elvis_interest, actor)
+var user_name = store.match(elvis, name)
+var user_email = store.match(elvis, email)
+var user_movieyearstart = store.match(elvis, movieyearstart)
+var user_movieyearend = store.match(elvis, movieyearend)
 
  user_profile = {
-    name: elname[0].object.value,
-    email: elemail[0].object.value,
+    name: user_name[0].object.value,
+    email: user_email[0].object.value,
     interest: {
         genre:[],
         actor:[],
         country:[]
     },
-    movieyearstart: elmovieyearstart[0].object.value,
-    movieyearend: elmovieyearend[0].object.value
+    movieyearstart: user_movieyearstart[0].object.value,
+    movieyearend: user_movieyearend[0].object.value
  }
 
- for (let i=0; i<elgenre.length; i++){
-    user_profile.interest.genre.push(elgenre[i].object.value)
+ for (let i=0; i<user_genre.length; i++){
+    user_profile.interest.genre.push(user_genre[i].object.value)
 }
 
-for (let i=0; i<elcountry.length; i++){
-    user_profile.interest.country.push(elcountry[i].object.value)
+for (let i=0; i<user_country.length; i++){
+    user_profile.interest.country.push(user_country[i].object.value)
 }
 
-for (let i=0; i<elactor.length; i++){
-    user_profile.interest.actor.push(elactor[i].object.value)
+for (let i=0; i<user_actor.length; i++){
+    user_profile.interest.actor.push(user_actor[i].object.value)
 }
 
 if(user_profile.interest.actor.length >0) user_profile.actorLinks = {};
