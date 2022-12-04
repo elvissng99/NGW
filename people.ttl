@@ -1,0 +1,64 @@
+@prefix : <http://userprofile.com/owl/profile#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:UserProfile a rdfs:Class;
+    rdfs:label "UserProfile" ;
+    rdfs:comment "A user profile." .
+
+:Interest a rdfs:Class;
+    rdfs:label "Interest" ;
+    rdfs:comment "Interest of a user." .
+
+:hasInterest a rdf:Property ;
+   rdfs:domain :UserProfile;
+   rdfs:range :Interest .
+
+:name a rdf:Property;
+    rdfs:domain :UserProfile ;
+    rdfs:range xsd:string .
+
+:email a rdf:Property;
+    rdfs:domain :UserProfile ;
+    rdfs:range xsd:string .
+
+:movieYearStart a rdf:Property;
+    rdfs:domain :UserProfile ;
+    rdfs:range xsd:integer .
+
+:movieYearEnd a rdf:Property;
+    rdfs:domain :UserProfile ;
+    rdfs:range xsd:integer .
+
+:genre a rdf:Property;
+    rdfs:domain :Interest ;
+    rdfs:range xsd:string .
+
+:actor a rdf:Property;
+    rdfs:domain :Interest ;
+    rdfs:range xsd:string .
+
+:country a rdf:Property;
+    rdfs:domain :Interest ;
+    rdfs:range xsd:string .
+
+:elvis  rdf:type    :UserProfile .
+:elvis  :name       "elvis" .
+:elvis  :email      "emailelvis@gmail.com" .
+:elvis  :movieYearStart     2020 .
+:elvis  :movieYearEnd       2022 .
+:elvis_interest rdf:type    :Interest .
+:elvis  :hasInterest    :elvis_interest.
+:elvis_interest :genre  "Comedy" .
+:elvis_interest :genre  "Superhero" .
+:elvis_interest :genre  "Thriller".
+:elvis_interest :actor  "Tom Holland".
+:elvis_interest :actor  "Tom Cruise".
+:elvis_interest :country  "United States of America".
+:elvis_interest :country  "South Korea".
+
+
+
+
+
