@@ -3,7 +3,7 @@
         <form method="POST" action="/query">
             <p>Name: {{user_profile.name}}</p>
             <p>Email: {{user_profile.email}}</p>
-            <p>Movie Year Range: {{user_profile.movieYearRange.[0]}} - {{user_profile.movieYearRange.[1]}}</p>
+            <p>Movie Year Range: {{user_profile.movieyearstart}} - {{user_profile.movieyearend}}</p>
             <p>Preferred Genres</p>
             {{#if user_profile.interest.genre.length}}
                 <ul>

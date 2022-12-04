@@ -23,7 +23,11 @@
     rdfs:domain :UserProfile ;
     rdfs:range xsd:string .
 
-:movieYearRange a rdf:Property;
+:movieYearStart a rdf:Property;
+    rdfs:domain :UserProfile ;
+    rdfs:range xsd:integer .
+
+:movieYearEnd a rdf:Property;
     rdfs:domain :UserProfile ;
     rdfs:range xsd:integer .
 
@@ -42,7 +46,8 @@
 :elvis  rdf:type    :UserProfile .
 :elvis  :name       "elvis" .
 :elvis  :email      "emailelvis@gmail.com" .
-:elvis  :movieYearRange     2020,2022 . 
+:elvis  :movieYearStart     2020 .
+:elvis  :movieYearEnd       2022 .
 :elvis_interest rdf:type    :Interest .
 :elvis  :hasInterest    :elvis_interest.
 :elvis_interest :genre  "Comedy" .
