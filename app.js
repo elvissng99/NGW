@@ -69,8 +69,7 @@ app.get('/', function(request, response){
 })
 
 //display user profile
-app.get('/user_profile/:name', function(request, response){
-    console.log(request.params.name)
+app.get('/user_profile/:name', async function(request, response){
     let user = $rdf.sym('http://userprofile.com/owl/profile#'+request.params.name)
     let user_interest = $rdf.sym('http://userprofile.com/owl/profile#'+ request.params.name +'_interest')
 
@@ -110,7 +109,7 @@ app.get('/user_profile/:name', function(request, response){
 
     for(let i = 0; i <user_profile.interest.actor.length; i++){
         let query = "SELECT ?movie ?name WHERE { ?movie rdf:type dbo:Film . ?movie dbo:starring ?actor. ?actor dbp:name \""+user_profile.interest.actor[i]+"\"@en. ?movie dbp:name ?name }"
-        clientDBPedia.query.select(query).then(result => {
+        await clientDBPedia.query.select(query).then(result => {
             user_profile['woohoo'] = 'wakalaka'
             // console.log(result)
             user_profile.actorLinks[user_profile.interest.actor[i]] = []
@@ -118,14 +117,15 @@ app.get('/user_profile/:name', function(request, response){
                 let movie = {[row.name.value]:row.movie.value}
                 user_profile.actorLinks[user_profile.interest.actor[i]].push(movie)
             })
-            response.render('user_profile.hbs',{
-                user_profile
-            })
+            
         }).catch(error => {
             console.log(error)
             response.redirect('/')
         })
     }
+    response.render('user_profile.hbs',{
+        user_profile
+    })
 })
 
 app.post('/query',function(request,response){
