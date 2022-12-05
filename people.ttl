@@ -43,20 +43,20 @@
     rdfs:domain :Interest ;
     rdfs:range xsd:string .
 
-:user  rdf:type    :UserProfile .
-:user  :name       "elvis" .
-:user  :email      "emailelvis@gmail.com" .
-:user  :movieYearStart     2020 .
-:user  :movieYearEnd       2022 .
-:user_interest rdf:type    :Interest .
-:user  :hasInterest    :user_interest.
-:user_interest :genre  "Comedy" .
-:user_interest :genre  "Superhero" .
-:user_interest :genre  "Thriller".
-:user_interest :actor  "Tom Holland".
-:user_interest :actor  "Tom Cruise".
-:user_interest :country  "United States of America".
-:user_interest :country  "South Korea".
+:elvis  rdf:type    :UserProfile .
+:elvis  :name       "elvis" .
+:elvis  :email      "emailelvis@gmail.com" .
+:elvis  :movieYearStart     2020 .
+:elvis  :movieYearEnd       2022 .
+:elvis_interest rdf:type    :Interest .
+:elvis  :hasInterest    :elvis_interest.
+:elvis_interest :genre  "Comedy" .
+:elvis_interest :genre  "Superhero" .
+:elvis_interest :genre  "Thriller".
+:elvis_interest :actor  "Tom Holland".
+:elvis_interest :actor  "Tom Cruise".
+:elvis_interest :country  "United States of America".
+:elvis_interest :country  "South Korea".
 
 
 
