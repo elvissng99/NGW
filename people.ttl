@@ -73,6 +73,20 @@
 :junhan_interest :country  "United Kingdom".
 :junhan_interest :country  "Japan".
 
+:iris  rdf:type    :UserProfile .
+:iris  :name       "Iris" .
+:iris  :email      "emailiris@gmail.com" .
+:iris  :movieYearStart     2015 .
+:iris  :movieYearEnd       2019 .
+:iris_interest rdf:type    :Interest .
+:iris  :hasInterest    :iris_interest.
+:iris_interest :genre  "Superhero" .
+:iris_interest :genre  "Action".
+:iris_interest :actor  "Brad Pitt".
+:iris_interest :actor  "Jennifer Lawrence".
+:iris_interest :country  "United States of America".
+:iris_interest :country  "Japan".
+
 
 
 
