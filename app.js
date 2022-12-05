@@ -30,12 +30,15 @@ var genre = $rdf.sym('http://userprofile.com/owl/profile#genre')
 var actor = $rdf.sym('http://userprofile.com/owl/profile#actor')
 var country = $rdf.sym('http://userprofile.com/owl/profile#country')
 
-// user_names = ["elvis","junhan"]
-user_names = {
-    "elvis":"Elvis",
-    "junhan": "Jun Han"
-}
+var rdfusernames = store.match(null, name, null)
+var user_names = {}
 
+for(let i=0; i<rdfusernames.length; i++){
+    var namekey = rdfusernames[i].subject.value
+    var usernamekey = namekey.replace('http://userprofile.com/owl/profile#','');
+    var usernamevalue = rdfusernames[i].object.value
+    user_names[usernamekey] = usernamevalue
+}
 
 const ParsingClient = require('sparql-http-client/ParsingClient')
 
