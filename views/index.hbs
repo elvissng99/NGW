@@ -2,7 +2,7 @@
     {{#if user_names}}
     <ol>
         {{#each user_names}}
-            <li><a href="user_profile/{{this}}">{{this}}</a></li>
+            <li><a href="user_profile/{{@key}}">{{this}}</a></li>
         {{/each}}
     </ol>
     {{/if}}
