@@ -44,7 +44,7 @@
     rdfs:range xsd:string .
 
 :elvis  rdf:type    :UserProfile .
-:elvis  :name       "elvis" .
+:elvis  :name       "Elvis" .
 :elvis  :email      "emailelvis@gmail.com" .
 :elvis  :movieYearStart     2020 .
 :elvis  :movieYearEnd       2022 .
@@ -57,6 +57,21 @@
 :elvis_interest :actor  "Tom Cruise".
 :elvis_interest :country  "United States of America".
 :elvis_interest :country  "South Korea".
+
+:junhan  rdf:type    :UserProfile .
+:junhan  :name       "Jun Han" .
+:junhan  :email      "emailjunhan@gmail.com" .
+:junhan  :movieYearStart     2019 .
+:junhan  :movieYearEnd       2023 .
+:junhan_interest rdf:type    :Interest .
+:junhan  :hasInterest    :junhan_interest.
+:junhan_interest :genre  "Action" .
+:junhan_interest :genre  "Horror" .
+:junhan_interest :genre  "Thriller".
+:junhan_interest :actor  "Tom Hiddleston".
+:junhan_interest :actor  "Tom Hardy".
+:junhan_interest :country  "United Kingdom".
+:junhan_interest :country  "Japan".
 
 
 
