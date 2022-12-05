@@ -16,74 +16,28 @@ $rdf.parse(
 	"text/turtle"
 )
 
-var userprofile = $rdf.sym('http://userprofile.com/owl/profile#UserProfile')
-var interest = $rdf.sym('http://userprofile.com/owl/profile#Interest')
-var hasinterest = $rdf.sym('http://userprofile.com/owl/profile#hasInterest')
+//NOT USED
+// var userprofile = $rdf.sym('http://userprofile.com/owl/profile#UserProfile')
+// var interest = $rdf.sym('http://userprofile.com/owl/profile#Interest')
+// var hasinterest = $rdf.sym('http://userprofile.com/owl/profile#hasInterest')
+//NOT USED
+
 var name = $rdf.sym('http://userprofile.com/owl/profile#name')
 var email = $rdf.sym('http://userprofile.com/owl/profile#email')
 var movieyearstart = $rdf.sym('http://userprofile.com/owl/profile#movieYearStart')
 var movieyearend = $rdf.sym('http://userprofile.com/owl/profile#movieYearEnd')
 var genre = $rdf.sym('http://userprofile.com/owl/profile#genre')
 var actor = $rdf.sym('http://userprofile.com/owl/profile#actor')
-var elvis_interest = $rdf.sym('http://userprofile.com/owl/profile#elvis_interest')
 var country = $rdf.sym('http://userprofile.com/owl/profile#country')
-var elvis = $rdf.sym('http://userprofile.com/owl/profile#elvis')
 
-var user_country = store.match(elvis_interest, country)
-var user_genre = store.match(elvis_interest, genre)
-var user_actor = store.match(elvis_interest, actor)
-var user_name = store.match(elvis, name)
-var user_email = store.match(elvis, email)
-var user_movieyearstart = store.match(elvis, movieyearstart)
-var user_movieyearend = store.match(elvis, movieyearend)
+user_names = ["elvis","junhan"]
 
- user_profile = {
-    name: user_name[0].object.value,
-    email: user_email[0].object.value,
-    interest: {
-        genre:[],
-        actor:[],
-        country:[]
-    },
-    movieyearstart: user_movieyearstart[0].object.value,
-    movieyearend: user_movieyearend[0].object.value
- }
-
- for (let i=0; i<user_genre.length; i++){
-    user_profile.interest.genre.push(user_genre[i].object.value)
-}
-
-for (let i=0; i<user_country.length; i++){
-    user_profile.interest.country.push(user_country[i].object.value)
-}
-
-for (let i=0; i<user_actor.length; i++){
-    user_profile.interest.actor.push(user_actor[i].object.value)
-}
-
-if(user_profile.interest.actor.length >0) user_profile.actorLinks = {};
 
 const ParsingClient = require('sparql-http-client/ParsingClient')
 
 const clientDBPedia = new ParsingClient({
 	endpointUrl: 'https://dbpedia.org/sparql'
 })
-
-for(let i = 0; i <user_profile.interest.actor.length; i++){
-    let query = "SELECT ?movie ?name WHERE { ?movie rdf:type dbo:Film . ?movie dbo:starring ?actor. ?actor dbp:name \""+user_profile.interest.actor[i]+"\"@en. ?movie dbp:name ?name }"
-    clientDBPedia.query.select(query).then(result => {
-    
-        // console.log(result)
-        user_profile.actorLinks[user_profile.interest.actor[i]] = []
-        result.forEach(row => {
-            let movie = {[row.name.value]:row.movie.value}
-            user_profile.actorLinks[user_profile.interest.actor[i]].push(movie)
-        })
-        // console.log(user_profile)
-    }).catch(error => {
-        console.log(error)
-    })
-}
 
 const clientWIKI = new ParsingClient({
 	endpointUrl: 'https://query.wikidata.org/sparql'
@@ -103,8 +57,68 @@ app.use(express.urlencoded({
 //display user profile
 app.get('/', function(request, response){
     response.render('index.hbs',{
-        user_profile
+        user_names
     })
+})
+
+//display user profile
+app.get('/user_profile/:name', function(request, response){
+    console.log(request.params.name)
+    let user = $rdf.sym('http://userprofile.com/owl/profile#'+request.params.name)
+    let user_interest = $rdf.sym('http://userprofile.com/owl/profile#'+ request.params.name +'_interest')
+
+    let user_country = store.match(user_interest, country)
+    let user_genre = store.match(user_interest, genre)
+    let user_actor = store.match(user_interest, actor)
+    let user_name = store.match(user, name)
+    let user_email = store.match(user, email)
+    let user_movieyearstart = store.match(user, movieyearstart)
+    let user_movieyearend = store.match(user, movieyearend)
+
+    user_profile = {
+        name: user_name[0].object.value,
+        email: user_email[0].object.value,
+        interest: {
+            genre:[],
+            actor:[],
+            country:[]
+        },
+        movieyearstart: user_movieyearstart[0].object.value,
+        movieyearend: user_movieyearend[0].object.value
+    }
+    
+    for (let i=0; i<user_genre.length; i++){
+        user_profile.interest.genre.push(user_genre[i].object.value)
+    }
+    
+    for (let i=0; i<user_country.length; i++){
+        user_profile.interest.country.push(user_country[i].object.value)
+    }
+    
+    for (let i=0; i<user_actor.length; i++){
+        user_profile.interest.actor.push(user_actor[i].object.value)
+    }
+    
+    if(user_profile.interest.actor.length >0) user_profile.actorLinks = {}
+
+    for(let i = 0; i <user_profile.interest.actor.length; i++){
+        let query = "SELECT ?movie ?name WHERE { ?movie rdf:type dbo:Film . ?movie dbo:starring ?actor. ?actor dbp:name \""+user_profile.interest.actor[i]+"\"@en. ?movie dbp:name ?name }"
+        clientDBPedia.query.select(query).then(result => {
+            user_profile['woohoo'] = 'wakalaka'
+            // console.log(result)
+            user_profile.actorLinks[user_profile.interest.actor[i]] = []
+            result.forEach(row => {
+                let movie = {[row.name.value]:row.movie.value}
+                user_profile.actorLinks[user_profile.interest.actor[i]].push(movie)
+            })
+            response.render('user_profile.hbs',{
+                user_profile
+            })
+        }).catch(error => {
+            console.log(error)
+            response.redirect('/')
+        })
+    }
 })
 
 app.post('/query',function(request,response){
@@ -128,23 +142,9 @@ app.post('/query',function(request,response){
         
     }).catch(error => {
         console.log(error)
+        response.redirect('/')
     })
 
-})
-
-// GET /layout.css
-app.get("/layout.css", function(request, response){
-	response.sendFile("layout.css", {root: "."})
-})
-
-// GET /
-app.get("/", function(request, response){
-	response.render("index.hbs")
-})
-
-// GET /about
-app.get("/about", function(request, response){
-	response.render("about.hbs")
 })
 
 app.listen(8080)
