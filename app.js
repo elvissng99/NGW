@@ -25,17 +25,17 @@ var movieyearstart = $rdf.sym('http://userprofile.com/owl/profile#movieYearStart
 var movieyearend = $rdf.sym('http://userprofile.com/owl/profile#movieYearEnd')
 var genre = $rdf.sym('http://userprofile.com/owl/profile#genre')
 var actor = $rdf.sym('http://userprofile.com/owl/profile#actor')
-var elvis_interest = $rdf.sym('http://userprofile.com/owl/profile#elvis_interest')
+var user_interest = $rdf.sym('http://userprofile.com/owl/profile#user_interest')
 var country = $rdf.sym('http://userprofile.com/owl/profile#country')
-var elvis = $rdf.sym('http://userprofile.com/owl/profile#elvis')
+var user = $rdf.sym('http://userprofile.com/owl/profile#user')
 
-var user_country = store.match(elvis_interest, country)
-var user_genre = store.match(elvis_interest, genre)
-var user_actor = store.match(elvis_interest, actor)
-var user_name = store.match(elvis, name)
-var user_email = store.match(elvis, email)
-var user_movieyearstart = store.match(elvis, movieyearstart)
-var user_movieyearend = store.match(elvis, movieyearend)
+var user_country = store.match(user_interest, country)
+var user_genre = store.match(user_interest, genre)
+var user_actor = store.match(user_interest, actor)
+var user_name = store.match(user, name)
+var user_email = store.match(user, email)
+var user_movieyearstart = store.match(user, movieyearstart)
+var user_movieyearend = store.match(user, movieyearend)
 
  user_profile = {
     name: user_name[0].object.value,
