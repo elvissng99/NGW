@@ -132,19 +132,4 @@ app.post('/query',function(request,response){
 
 })
 
-// GET /layout.css
-app.get("/layout.css", function(request, response){
-	response.sendFile("layout.css", {root: "."})
-})
-
-// GET /
-app.get("/", function(request, response){
-	response.render("index.hbs")
-})
-
-// GET /about
-app.get("/about", function(request, response){
-	response.render("about.hbs")
-})
-
 app.listen(8080)
