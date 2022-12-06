@@ -110,8 +110,6 @@ app.get('/user_profile/:name', async function(request, response){
     for(let i = 0; i <user_profile.interest.actor.length; i++){
         let query = "SELECT ?movie ?name WHERE { ?movie rdf:type dbo:Film . ?movie dbo:starring ?actor. ?actor dbp:name \""+user_profile.interest.actor[i]+"\"@en. ?movie dbp:name ?name }"
         await clientDBPedia.query.select(query).then(result => {
-            user_profile['woohoo'] = 'wakalaka'
-            // console.log(result)
             user_profile.actorLinks[user_profile.interest.actor[i]] = []
             result.forEach(row => {
                 let movie = {[row.name.value]:row.movie.value}
